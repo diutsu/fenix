@@ -41,8 +41,8 @@
     </ciManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:fenixedu/fenix.git</connection>
-        <developerConnection>scm:git:git@github.com:fenixedu/fenix.git</developerConnection>
+        <connection>scm:git:git@github.com:diutsu/fenix.git</connection>
+        <developerConnection>scm:git:git@github.com:diutsu/fenix.git</developerConnection>
         <url>http://fenixedu.org</url>
         <tag>HEAD</tag>
     </scm>
@@ -248,7 +248,7 @@
     <repositories>
         <repository>
             <id>fenixedu-maven-repository</id>
-            <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
+            <url>https://localhost:8082/artifactory</url>
         </repository>
     </repositories>
 
