@@ -247,9 +247,18 @@
 
     <repositories>
         <repository>
-            <id>fenixedu-maven-repository</id>
-            <url>https://localhost:8082/artifactory</url>
+            <id>Fenrir</id>
+            <name>Fenrir-releases</name>
+            <url>http://localhost:8082/artifactory/dsi-mvn</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>Fenrir</id>
+            <name>Fenrir-releases</name>
+            <url>http://localhost:8082/artifactory/ext-release-local</url>
+        </repository>
+    </distributionManagement>
 
 </project>
