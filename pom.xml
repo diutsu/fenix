@@ -9,7 +9,7 @@
 
     <artifactId>fenixedu-academic</artifactId>
     <packaging>jar</packaging>
-    <version>5.2.3</version>
+    <version>5.2.4-SNAPSHOT</version>
 
     <name>FenixEdu Academic</name>
     <url>http://fenixedu.org</url>
@@ -43,7 +43,7 @@
         <connection>scm:git:git@github.com:diutsu/fenix.git</connection>
         <developerConnection>scm:git:git@github.com:diutsu/fenix.git</developerConnection>
         <url>http://fenixedu.org</url>
-        <tag>v5.2.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
