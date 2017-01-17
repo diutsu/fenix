@@ -29,8 +29,7 @@
 <div ng-view>
 </div>
 </div>
-    ${portal.bennuPortal()}
-    
+${portal.angularToolkit()}
 <script>
 	var strings = {
 		groupingShiftChange : "${fr:message('resources.ApplicationResources', 'message.student.studentGroup.shiftChange')}",
