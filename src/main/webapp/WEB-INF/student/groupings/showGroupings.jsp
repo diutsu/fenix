@@ -42,4 +42,10 @@ ${portal.angularToolkit()}
 	src="${pageContext.request.contextPath}/bennu-core/js/angular.min.js"></script>
 <script
 	src="${pageContext.request.contextPath}/bennu-portal/js/angular-route.min.js"></script>
+<script>
+    angular.module("bennuToolkit").config(['$httpProvider',function($httpProvider) {
+        $httpProvider.defaults.headers.common = $httpProvider.defaults.headers.common || {};
+        $httpProvider.defaults.headers.common['${csrf.headerName}'] = '${csrf.token}';
+    }]);
+</script>
 <script src="${pageContext.request.contextPath}/student/groupings/studentGroupingsApp.js"></script>
