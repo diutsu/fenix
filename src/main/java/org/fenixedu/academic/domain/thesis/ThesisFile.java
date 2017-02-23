@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.thesis;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,7 +32,7 @@ import org.fenixedu.bennu.io.servlet.FileDownloadServlet;
 
 public class ThesisFile extends ThesisFile_Base {
 
-    public ThesisFile(String filename, String displayName, byte[] content) {
+    public ThesisFile(String filename, String displayName, InputStream content) throws IOException {
         super();
         init(displayName, filename, content);
     }

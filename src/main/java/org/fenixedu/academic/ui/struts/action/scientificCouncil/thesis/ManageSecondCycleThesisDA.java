@@ -356,12 +356,11 @@ public class ManageSecondCycleThesisDA extends FenixDispatchAction {
             } else {
                 throw new DomainException("thesis.files.dissertation.title.required");
             }
-            byte[] bytes = ByteStreams.toByteArray(bean.getFile());
             if (dissertationFile) {
-                CreateThesisDissertationFile.runCreateThesisDissertationFile(thesis, bytes, bean.getSimpleFileName(),
+                CreateThesisDissertationFile.runCreateThesisDissertationFile(thesis, bean.getFile(), bean.getSimpleFileName(),
                         bean.getTitle(), bean.getSubTitle(), bean.getLanguage());
             } else {
-                CreateThesisAbstractFile.runCreateThesisAbstractFile(thesis, bytes, bean.getSimpleFileName(), bean.getTitle(),
+                CreateThesisAbstractFile.runCreateThesisAbstractFile(thesis, bean.getFile(), bean.getSimpleFileName(), bean.getTitle(),
                         bean.getSubTitle(), bean.getLanguage());
             }
         }

@@ -19,6 +19,7 @@
 package org.fenixedu.academic.service.services.thesis;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -47,7 +48,7 @@ public class CreateThesisDissertationFile extends CreateThesisFile {
 
     @Override
     protected void updateThesis(Thesis thesis, ThesisFile file, String title, String subTitle, Locale language, String fileName,
-            byte[] bytes) throws FenixServiceException, IOException {
+                                InputStream bytes) throws FenixServiceException, IOException {
         if (title == null) {
             throw new DomainException("thesis.files.dissertation.title.required");
         }
@@ -64,8 +65,8 @@ public class CreateThesisDissertationFile extends CreateThesisFile {
     private static final CreateThesisDissertationFile serviceInstance = new CreateThesisDissertationFile();
 
     @Atomic
-    public static ThesisFile runCreateThesisDissertationFile(Thesis thesis, byte[] bytes, String fileName, String title,
-            String subTitle, Locale language) throws FenixServiceException, IOException {
+    public static ThesisFile runCreateThesisDissertationFile(Thesis thesis, InputStream bytes, String fileName, String title,
+                                                             String subTitle, Locale language) throws FenixServiceException, IOException {
         ScientificCouncilOrStudentThesisAuthorizationFilter.instance.execute(thesis);
         return serviceInstance.run(thesis, bytes, fileName, title, subTitle, language);
     }
