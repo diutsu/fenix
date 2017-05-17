@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.seminar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,8 +106,12 @@ public class PublicPresentationSeminarProcess extends PublicPresentationSeminarP
 
             final PublicPresentationSeminarProcessBean bean = (PublicPresentationSeminarProcessBean) object;
             bean.getDocument().setType(PhdIndividualProgramDocumentType.PUBLIC_PRESENTATION_SEMINAR_COMISSION);
-
-            process.addDocument(bean.getDocument(), userView.getPerson());
+    
+            try {
+                process.addDocument(bean.getDocument(), userView.getPerson());
+            } catch (IOException e) {
+                throw new DomainException(e.getMessage());
+            }
             process.createState(PublicPresentationSeminarProcessStateType.COMMISSION_WAITING_FOR_VALIDATION,
                     userView.getPerson(), bean.getRemarks());
 
@@ -144,7 +149,11 @@ public class PublicPresentationSeminarProcess extends PublicPresentationSeminarP
             bean.getDocument().setType(PhdIndividualProgramDocumentType.PUBLIC_PRESENTATION_SEMINAR_COMISSION);
 
             if (bean.getDocument().hasAnyInformation()) {
-                process.addDocument(bean.getDocument(), userView.getPerson());
+                try {
+                    process.addDocument(bean.getDocument(), userView.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException(e.getMessage());
+                }
             }
 
             process.createState(PublicPresentationSeminarProcessStateType.COMMISSION_VALIDATED, userView.getPerson(),
@@ -264,8 +273,12 @@ public class PublicPresentationSeminarProcess extends PublicPresentationSeminarP
 
             final PublicPresentationSeminarProcessBean bean = (PublicPresentationSeminarProcessBean) object;
             bean.getDocument().setType(PhdIndividualProgramDocumentType.PUBLIC_PRESENTATION_SEMINAR_REPORT);
-            process.addDocument(bean.getDocument(), userView.getPerson());
-
+            try {
+                process.addDocument(bean.getDocument(), userView.getPerson());
+            } catch (IOException e) {
+                throw new DomainException(e.getMessage());
+            }
+    
             process.createState(PublicPresentationSeminarProcessStateType.REPORT_WAITING_FOR_VALIDATION, userView.getPerson(),
                     bean.getRemarks());
 
@@ -301,7 +314,11 @@ public class PublicPresentationSeminarProcess extends PublicPresentationSeminarP
             bean.getDocument().setType(PhdIndividualProgramDocumentType.PUBLIC_PRESENTATION_SEMINAR_REPORT);
 
             if (bean.getDocument().hasAnyInformation()) {
-                process.addDocument(bean.getDocument(), userView.getPerson());
+                try {
+                    process.addDocument(bean.getDocument(), userView.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException("error.file.upload");
+                }
             }
 
             process.createState(PublicPresentationSeminarProcessStateType.REPORT_VALIDATED, userView.getPerson(),

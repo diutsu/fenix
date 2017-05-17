@@ -23,14 +23,17 @@ import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.thesis.ThesisJuryElement;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class PhdThesisReportFeedbackDocument extends PhdThesisReportFeedbackDocument_Base {
 
     private PhdThesisReportFeedbackDocument() {
         super();
     }
 
-    public PhdThesisReportFeedbackDocument(ThesisJuryElement element, String remarks, byte[] content, String filename,
-            Person uploader) {
+    public PhdThesisReportFeedbackDocument(ThesisJuryElement element, String remarks, InputStream content, String filename,
+                                           Person uploader) {
         this();
         String[] args = {};
 
@@ -39,15 +42,19 @@ public class PhdThesisReportFeedbackDocument extends PhdThesisReportFeedbackDocu
             throw new DomainException("error.PhdThesisReportFeedbackDocument.invalid.element", args);
         }
         setJuryElement(element);
-
-        init(element.getProcess(), PhdIndividualProgramDocumentType.JURY_REPORT_FEEDBACK, remarks, content, filename, uploader);
+    
+        try {
+            init(element.getProcess(), PhdIndividualProgramDocumentType.JURY_REPORT_FEEDBACK, remarks, content, filename, uploader);
+        } catch (IOException e) {
+            throw new DomainException("error.reading.file");
+        }
     }
 
     @Override
-    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, byte[] content,
+    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, InputStream content,
             String filename, Person uploader) {
 
-        if (documentType == null || content == null || content.length == 0 || StringUtils.isEmpty(filename)) {
+        if (documentType == null || content == null || StringUtils.isEmpty(filename)) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.documentType.and.file.cannot.be.null");
         }
 

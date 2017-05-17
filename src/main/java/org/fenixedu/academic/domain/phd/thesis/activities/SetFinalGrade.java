@@ -27,6 +27,8 @@ import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcessStateType;
 import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.LocalDate;
 
+import java.io.IOException;
+
 public class SetFinalGrade extends PhdThesisActivity {
 
     @Override
@@ -51,7 +53,11 @@ public class SetFinalGrade extends PhdThesisActivity {
 
         for (final PhdProgramDocumentUploadBean each : bean.getDocuments()) {
             if (each.hasAnyInformation()) {
-                process.addDocument(each, userView.getPerson());
+                try {
+                    process.addDocument(each, userView.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException("error.file");
+                }
             }
         }
 

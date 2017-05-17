@@ -19,23 +19,31 @@
 package org.fenixedu.academic.domain.documents;
 
 import org.fenixedu.academic.domain.Person;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.organizationalStructure.Party;
 
 import pt.ist.fenixframework.Atomic;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Pedro Santos (pmrsa)
  */
 public class GeneratedDocumentWithoutSource extends GeneratedDocumentWithoutSource_Base {
     public GeneratedDocumentWithoutSource(GeneratedDocumentType type, Party addressee, Person operator, String filename,
-            byte[] content) {
+            InputStream content) throws IOException {
         super();
         init(type, addressee, operator, filename, content);
     }
 
     @Atomic
     public static void createDocument(GeneratedDocumentType type, Party addressee, Person operator, String filename,
-            byte[] content) {
-        new GeneratedDocumentWithoutSource(type, addressee, operator, filename, content);
+            InputStream content) {
+        try {
+            new GeneratedDocumentWithoutSource(type, addressee, operator, filename, content);
+        } catch (IOException e) {
+            throw new DomainException("error.file");
+        }
     }
 }

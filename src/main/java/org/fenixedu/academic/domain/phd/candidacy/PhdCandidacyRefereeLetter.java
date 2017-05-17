@@ -52,11 +52,8 @@ public class PhdCandidacyRefereeLetter extends PhdCandidacyRefereeLetter_Base {
         setPotencialToExcelPhd(bean.getPotencialToExcelPhd());
 
         setComments(bean.getComments());
-        if (bean.hasFileContent()) {
-            if (getFile() != null) {
-                getFile().delete();
-            }
-            setFile(new PhdCandidacyRefereeLetterFile(getPhdProgramCandidacyProcess(), bean.getFilename(), bean.getFileContent()));
+        if (getFile() != null) {
+            setFile(new PhdCandidacyRefereeLetterFile(getPhdProgramCandidacyProcess(), bean.getFilename(), bean.getFile()));
         }
 
         setRefereeName(bean.getRefereeName());

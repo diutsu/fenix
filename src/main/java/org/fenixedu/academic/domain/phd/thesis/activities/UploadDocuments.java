@@ -18,9 +18,11 @@
  */
 package org.fenixedu.academic.domain.phd.thesis.activities;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcess;
 import org.fenixedu.bennu.core.domain.User;
@@ -41,7 +43,11 @@ public class UploadDocuments extends PhdThesisActivity {
 
         for (final PhdProgramDocumentUploadBean each : documents) {
             if (each.hasAnyInformation()) {
-                process.addDocument(each, userView != null ? userView.getPerson() : null);
+                try {
+                    process.addDocument(each, userView != null ? userView.getPerson() : null);
+                } catch (IOException e) {
+                    throw new DomainException("error.file");
+                }
             }
         }
 

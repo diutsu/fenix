@@ -22,12 +22,16 @@ import org.fenixedu.academic.domain.documents.GeneratedDocumentType;
 
 import pt.ist.fenixframework.Atomic;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class QueueJobResultFile extends QueueJobResultFile_Base {
 
-    protected QueueJobResultFile(QueueJobWithFile job, Person operator, String filename, byte[] content) {
+    protected QueueJobResultFile(QueueJobWithFile job, Person operator, String filename, InputStream fileStream)
+        throws IOException {
         super();
         setJob(job);
-        init(GeneratedDocumentType.QUEUE_JOB, operator, operator, filename, content);
+        init(GeneratedDocumentType.QUEUE_JOB, operator, operator, filename, fileStream);
     }
 
     @Override
@@ -37,8 +41,8 @@ public class QueueJobResultFile extends QueueJobResultFile_Base {
     }
 
     @Atomic
-    public static void store(QueueJobWithFile job, Person person, String filename, byte[] content) {
-        new QueueJobResultFile(job, person, filename, content);
+    public static void store(QueueJobWithFile job, Person person, String filename, InputStream fileStream) throws IOException {
+        new QueueJobResultFile(job, person, filename, fileStream);
     }
 
 }

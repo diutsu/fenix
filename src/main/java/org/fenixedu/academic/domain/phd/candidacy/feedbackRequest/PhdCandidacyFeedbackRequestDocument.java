@@ -18,6 +18,9 @@
  */
 package org.fenixedu.academic.domain.phd.candidacy.feedbackRequest;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.lang.StringUtils;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -31,8 +34,8 @@ public class PhdCandidacyFeedbackRequestDocument extends PhdCandidacyFeedbackReq
         super();
     }
 
-    public PhdCandidacyFeedbackRequestDocument(PhdCandidacyFeedbackRequestElement element, String remarks, byte[] content,
-            String filename, Person uploader) {
+    public PhdCandidacyFeedbackRequestDocument(PhdCandidacyFeedbackRequestElement element, String remarks, InputStream fileStream,
+            String filename, Person uploader) throws IOException {
         this();
         Object obj = element.getProcess();
         String[] args = {};
@@ -43,15 +46,15 @@ public class PhdCandidacyFeedbackRequestDocument extends PhdCandidacyFeedbackReq
         }
         setElement(element);
 
-        init(element.getProcess(), PhdIndividualProgramDocumentType.CANDIDACY_FEEDBACK_DOCUMENT, remarks, content, filename,
+        init(element.getProcess(), PhdIndividualProgramDocumentType.CANDIDACY_FEEDBACK_DOCUMENT, remarks, fileStream, filename,
                 uploader);
     }
 
     @Override
-    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, byte[] content,
+    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, InputStream fileStream,
             String filename, Person uploader) {
 
-        if (documentType == null || content == null || content.length == 0 || StringUtils.isEmpty(filename)) {
+        if (documentType == null || fileStream == null || StringUtils.isEmpty(filename)) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.documentType.and.file.cannot.be.null");
         }
     }

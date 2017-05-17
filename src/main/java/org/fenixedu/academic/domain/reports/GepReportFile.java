@@ -18,7 +18,9 @@
  */
 package org.fenixedu.academic.domain.reports;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,7 +214,8 @@ public abstract class GepReportFile extends GepReportFile_Base {
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("application/txt");
-        queueJobResult.setContent(byteArrayOS.toByteArray());
+        InputStream inputStream = new ByteArrayInputStream(byteArrayOS.toByteArray());
+        queueJobResult.setStream(inputStream);
 
         logger.info("Job " + getFilename() + " completed");
 

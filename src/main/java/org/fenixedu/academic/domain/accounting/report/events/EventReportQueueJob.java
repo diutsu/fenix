@@ -18,10 +18,7 @@
  */
 package org.fenixedu.academic.domain.accounting.report.events;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -167,7 +164,7 @@ public class EventReportQueueJob extends EventReportQueueJob_Base {
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("text/tsv");
-        queueJobResult.setContent(byteArrayOSForDebts.toByteArray());
+        queueJobResult.setStream(new ByteArrayInputStream(byteArrayOSForDebts.toByteArray()));
 
         EventReportQueueJobFile fileForDebts = new EventReportQueueJobFile(byteArrayOSForDebts.toByteArray(), "dividas.tsv");
         EventReportQueueJobFile fileForExemptions =

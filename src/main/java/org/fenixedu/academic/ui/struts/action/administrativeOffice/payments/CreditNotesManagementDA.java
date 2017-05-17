@@ -18,11 +18,14 @@
  */
 package org.fenixedu.academic.ui.struts.action.administrativeOffice.payments;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -38,6 +41,7 @@ import org.fenixedu.academic.service.services.accounting.ChangeCreditNoteState;
 import org.fenixedu.academic.service.services.accounting.CreateCreditNote;
 import org.fenixedu.academic.ui.struts.FenixActionForm;
 import org.fenixedu.academic.ui.struts.action.administrativeOffice.student.SearchForStudentsDA;
+import org.fenixedu.academic.util.report.ReportPrinter;
 import org.fenixedu.academic.util.report.ReportsUtils;
 import org.fenixedu.bennu.struts.annotations.Forward;
 import org.fenixedu.bennu.struts.annotations.Forwards;
@@ -167,10 +171,13 @@ public class CreditNotesManagementDA extends PaymentsManagementDispatchAction {
 
             final CreditNoteDocument original = new CreditNoteDocument(creditNote, true);
             final CreditNoteDocument duplicate = new CreditNoteDocument(creditNote, false);
+            ReportPrinter.ReportResult report = ReportsUtils.generateReport(original, duplicate);
+            CountingInputStream stream = new CountingInputStream(new ByteArrayInputStream(report.getData()));
 
-            final byte[] data = ReportsUtils.generateReport(original, duplicate).getData();
-
-            CreditNoteGeneratedDocument.store(creditNote, original.getReportFileName() + ".pdf", data);
+            CreditNoteGeneratedDocument.store(creditNote, original.getReportFileName() + ".pdf", stream);
+    
+            final byte[] data = report.getData();
+    
             response.setContentLength(data.length);
             response.setContentType("application/pdf");
             response.addHeader("Content-Disposition", String.format("attachment; filename=%s.pdf", original.getReportFileName()));

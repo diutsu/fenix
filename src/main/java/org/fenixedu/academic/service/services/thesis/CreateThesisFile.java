@@ -18,7 +18,9 @@
  */
 package org.fenixedu.academic.service.services.thesis;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -30,7 +32,7 @@ import org.fenixedu.bennu.core.security.Authenticate;
 
 public abstract class CreateThesisFile {
 
-    public ThesisFile run(Thesis thesis, byte[] bytes, String fileName, String title, String subTitle, Locale language)
+    public ThesisFile run(Thesis thesis, InputStream file, String fileName, String title, String subTitle, Locale language)
             throws FenixServiceException, IOException {
 
         if (!thesis.isWaitingConfirmation()
@@ -45,20 +47,17 @@ public abstract class CreateThesisFile {
 
         removePreviousFile(thesis);
 
-        if (bytes == null || fileName == null) {
-            return null;
-        }
 
-        ThesisFile file = new ThesisFile(fileName, fileName, bytes);
+        ThesisFile thesisFile = new ThesisFile(fileName, fileName, file);
 
-        updateThesis(thesis, file, title, subTitle, language, fileName, bytes);
+        updateThesis(thesis, thesisFile, title, subTitle, language, fileName);
 
-        return file;
+        return thesisFile;
     }
 
     protected abstract void removePreviousFile(Thesis thesis);
 
-    protected abstract void updateThesis(Thesis thesis, ThesisFile file, String title, String subTitle, Locale language,
-            String fileName, byte[] bytes) throws FenixServiceException, IOException;
+    protected abstract void updateThesis(Thesis thesis, ThesisFile thesisFile, String title, String subTitle, Locale language,
+            String fileName) throws FenixServiceException, IOException;
 
 }

@@ -25,14 +25,18 @@ import org.fenixedu.academic.predicate.AccessControl;
 
 import pt.ist.fenixframework.Atomic;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Pedro Santos (pmrsa)
  */
 public class ReceiptGeneratedDocument extends ReceiptGeneratedDocument_Base {
-    protected ReceiptGeneratedDocument(Receipt source, Party addressee, Person operator, String filename, byte[] content) {
+    protected ReceiptGeneratedDocument(Receipt source, Party addressee, Person operator, String filename, InputStream fileStream)
+        throws IOException {
         super();
         setSource(source);
-        init(GeneratedDocumentType.RECEIPT, addressee, operator, filename, content);
+        init(GeneratedDocumentType.RECEIPT, addressee, operator, filename, fileStream);
     }
 
     @Override
@@ -42,8 +46,8 @@ public class ReceiptGeneratedDocument extends ReceiptGeneratedDocument_Base {
     }
 
     @Atomic
-    public static void store(Receipt source, String filename, byte[] content) {
-        new ReceiptGeneratedDocument(source, source.getPerson(), AccessControl.getPerson(), filename, content);
+    public static void store(Receipt source, String filename, InputStream fileStream) throws IOException {
+        new ReceiptGeneratedDocument(source, source.getPerson(), AccessControl.getPerson(), filename, fileStream);
     }
 
 }

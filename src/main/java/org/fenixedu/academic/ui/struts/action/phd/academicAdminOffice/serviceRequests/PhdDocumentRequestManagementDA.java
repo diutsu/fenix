@@ -19,11 +19,13 @@
 package org.fenixedu.academic.ui.struts.action.phd.academicAdminOffice.serviceRequests;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,6 +41,8 @@ import org.fenixedu.bennu.struts.annotations.Forwards;
 import org.fenixedu.bennu.struts.annotations.Mapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
+
+import static com.google.common.io.ByteStreams.copy;
 
 @Mapping(path = "/phdDocumentRequestManagement", module = "academicAdministration",
         functionality = PhdIndividualProgramProcessDA.class)
@@ -86,23 +90,21 @@ public class PhdDocumentRequestManagementDA extends PhdAcademicServiceRequestsMa
     public ActionForward printDocument(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) throws IOException, FenixServiceException {
         final IDocumentRequest documentRequest = getPhdAcademicServiceRequest(request);
-        try {
-            byte[] data = documentRequest.generateDocument();
-
-            response.setContentLength(data.length);
-            response.setContentType("application/pdf");
-            response.addHeader("Content-Disposition", "attachment; filename=" + documentRequest.getReportFileName() + ".pdf");
-
-            final ServletOutputStream writer = response.getOutputStream();
-            writer.write(data);
-            writer.flush();
-            writer.close();
-
-            response.flushBuffer();
-            return null;
-        } catch (DomainException e) {
-            throw e;
-        }
+        CountingInputStream stream = new CountingInputStream(documentRequest.generateDocument());
+    
+        response.setContentType("application/pdf");
+        response.addHeader("Content-Disposition", "attachment; filename=" + documentRequest.getReportFileName() + ".pdf");
+    
+    
+        final ServletOutputStream writer = response.getOutputStream();
+    
+        copy(stream,writer);
+        writer.flush();
+        writer.close();
+        response.setContentLength((int) stream.getByteCount());
+        stream.close();
+        response.flushBuffer();
+        return null;
     }
 
 }

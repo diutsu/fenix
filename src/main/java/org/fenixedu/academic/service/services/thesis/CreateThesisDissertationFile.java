@@ -18,7 +18,10 @@
  */
 package org.fenixedu.academic.service.services.thesis;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -46,17 +49,16 @@ public class CreateThesisDissertationFile extends CreateThesisFile {
     }
 
     @Override
-    protected void updateThesis(Thesis thesis, ThesisFile file, String title, String subTitle, Locale language, String fileName,
-            byte[] bytes) throws FenixServiceException, IOException {
+    protected void updateThesis(Thesis thesis, ThesisFile thesisFile, String title, String subTitle, Locale language, String fileName) throws FenixServiceException, IOException {
         if (title == null) {
             throw new DomainException("thesis.files.dissertation.title.required");
         }
 
-        file.setTitle(title);
-        file.setSubTitle(subTitle == null ? "" : subTitle);
-        file.setLanguage(language);
+        thesisFile.setTitle(title);
+        thesisFile.setSubTitle(subTitle == null ? "" : subTitle);
+        thesisFile.setLanguage(language);
 
-        thesis.setDissertation(file);
+        thesis.setDissertation(thesisFile);
     }
 
     // Service Invokers migrated from Berserk
@@ -64,10 +66,10 @@ public class CreateThesisDissertationFile extends CreateThesisFile {
     private static final CreateThesisDissertationFile serviceInstance = new CreateThesisDissertationFile();
 
     @Atomic
-    public static ThesisFile runCreateThesisDissertationFile(Thesis thesis, byte[] bytes, String fileName, String title,
+    public static ThesisFile runCreateThesisDissertationFile(Thesis thesis, InputStream file, String fileName, String title,
             String subTitle, Locale language) throws FenixServiceException, IOException {
         ScientificCouncilOrStudentThesisAuthorizationFilter.instance.execute(thesis);
-        return serviceInstance.run(thesis, bytes, fileName, title, subTitle, language);
+        return serviceInstance.run(thesis, file, fileName, title, subTitle, language);
     }
 
 }

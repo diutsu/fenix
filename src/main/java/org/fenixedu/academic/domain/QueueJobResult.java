@@ -18,9 +18,12 @@
  */
 package org.fenixedu.academic.domain;
 
+import java.io.*;
+import java.io.File;
+
 public class QueueJobResult {
     private String contentType;
-    private byte[] content;
+    private InputStream stream;
 
     public String getContentType() {
         return contentType;
@@ -29,12 +32,12 @@ public class QueueJobResult {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
-
-    public byte[] getContent() {
-        return content;
+    
+    public InputStream getStream() {
+        return stream;
     }
-
-    public void setContent(byte[] content) {
-        this.content = content;
+    
+    public void setStream(InputStream stream) {
+        this.stream = stream;
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.phd.individualProcess.activities;
 
+import java.io.IOException;
+
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
 import org.fenixedu.academic.domain.phd.PhdParticipant;
 import org.fenixedu.academic.domain.phd.PhdParticipantBean;
@@ -36,10 +38,14 @@ public class AddGuidingInformation extends PhdIndividualProgramProcessActivity {
     protected PhdIndividualProgramProcess executeActivity(PhdIndividualProgramProcess process, User userView, Object object) {
         PhdParticipantBean bean = (PhdParticipantBean) object;
         PhdParticipant guiding = process.addGuiding(bean);
-        if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFileContent() != null) {
+        if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFile() != null) {
             PhdProgramDocumentUploadBean acceptanceLetter = bean.getGuidingAcceptanceLetter();
-            new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
-                    .getFileContent(), bean.getGuidingAcceptanceLetter().getFilename(), userView.getPerson());
+            try {
+                new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
+                        .getFile(), bean.getGuidingAcceptanceLetter().getFilename(), userView.getPerson());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return process;

@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.candidacyProcess.erasmus.reports;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
@@ -56,7 +57,7 @@ public class ErasmusCandidacyProcessReport extends ErasmusCandidacyProcessReport
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("application/excel");
-        queueJobResult.setContent(byteArrayOS.toByteArray());
+        queueJobResult.setStream(new ByteArrayInputStream(byteArrayOS.toByteArray()));
 
         return queueJobResult;
     }

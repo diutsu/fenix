@@ -18,8 +18,10 @@
  */
 package org.fenixedu.academic.domain.phd.individualProcess.activities;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
 import org.fenixedu.academic.domain.phd.PhdParticipant;
 import org.fenixedu.academic.domain.phd.PhdParticipantBean;
@@ -39,11 +41,15 @@ public class AddGuidingsInformation extends PhdIndividualProgramProcessActivity 
     protected PhdIndividualProgramProcess executeActivity(PhdIndividualProgramProcess process, User userView, Object object) {
         for (final PhdParticipantBean bean : (List<PhdParticipantBean>) object) {
             PhdParticipant guiding = process.addGuiding(bean);
-            if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFileContent() != null) {
+            if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFile() != null) {
                 PhdProgramDocumentUploadBean acceptanceLetter = bean.getGuidingAcceptanceLetter();
-                new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
-                        .getFileContent(), bean.getGuidingAcceptanceLetter().getFilename(),
-                        userView != null ? userView.getPerson() : process.getPerson());
+                try {
+                    new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
+                            .getFile(), bean.getGuidingAcceptanceLetter().getFilename(),
+                            userView != null ? userView.getPerson() : process.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException("error.file");
+                }
             }
         }
         return process;

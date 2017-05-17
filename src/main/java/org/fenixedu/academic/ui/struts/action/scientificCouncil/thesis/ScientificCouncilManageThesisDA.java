@@ -538,8 +538,7 @@ public class ScientificCouncilManageThesisDA extends AbstractManageThesisDA {
         RenderUtils.invalidateViewState();
 
         if (bean != null && bean.getFile() != null) {
-            byte[] bytes = ByteStreams.toByteArray(bean.getFile());
-            CreateThesisDissertationFile.runCreateThesisDissertationFile(getThesis(request), bytes, bean.getSimpleFileName(),
+            CreateThesisDissertationFile.runCreateThesisDissertationFile(getThesis(request), bean.getFile(), bean.getSimpleFileName(),
                     bean.getTitle(), bean.getSubTitle(), bean.getLanguage());
         }
 
@@ -552,8 +551,7 @@ public class ScientificCouncilManageThesisDA extends AbstractManageThesisDA {
         RenderUtils.invalidateViewState();
 
         if (bean != null && bean.getFile() != null) {
-            byte[] bytes = ByteStreams.toByteArray(bean.getFile());
-            CreateThesisAbstractFile.runCreateThesisAbstractFile(getThesis(request), bytes, bean.getSimpleFileName(),
+            CreateThesisAbstractFile.runCreateThesisAbstractFile(getThesis(request), bean.getFile(), bean.getSimpleFileName(),
                     bean.getTitle(), bean.getSubTitle(), bean.getLanguage());
         }
 

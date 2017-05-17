@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.documents;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Comparator;
 
 import org.fenixedu.academic.domain.Person;
@@ -45,11 +47,12 @@ public abstract class GeneratedDocument extends GeneratedDocument_Base {
         super();
     }
 
-    protected void init(GeneratedDocumentType type, Party addressee, Person operator, String filename, byte[] content) {
+    protected void init(GeneratedDocumentType type, Party addressee, Person operator, String filename, InputStream fileStream)
+        throws IOException {
         setType(type);
         setAddressee(addressee);
         setOperator(operator);
-        init(filename, filename, content);
+        init(filename, filename, fileStream);
     }
 
     @Override

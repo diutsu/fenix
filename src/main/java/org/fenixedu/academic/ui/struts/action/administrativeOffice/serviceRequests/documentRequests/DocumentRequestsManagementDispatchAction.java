@@ -19,6 +19,7 @@
 package org.fenixedu.academic.ui.struts.action.administrativeOffice.serviceRequests.documentRequests;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jvstm.cps.ConsistencyException;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -61,6 +63,8 @@ import org.fenixedu.bennu.struts.annotations.Mapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixframework.FenixFramework;
+
+import static com.google.common.io.ByteStreams.copy;
 
 @Mapping(path = "/documentRequestsManagement", module = "academicAdministration",
         formBeanClass = AcademicServiceRequestsManagementDispatchAction.AcademicServiceRequestsManagementForm.class,
@@ -110,23 +114,18 @@ public class DocumentRequestsManagementDispatchAction extends FenixDispatchActio
     public ActionForward printDocument(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response) throws IOException, FenixServiceException {
         final IDocumentRequest documentRequest = getDocumentRequest(request);
-        try {
-            byte[] data = documentRequest.generateDocument();
-
-            response.setContentLength(data.length);
-            response.setContentType("application/pdf");
-            response.addHeader("Content-Disposition", "attachment; filename=" + documentRequest.getReportFileName() + ".pdf");
-
-            final ServletOutputStream writer = response.getOutputStream();
-            writer.write(data);
-            writer.flush();
-            writer.close();
-
-            response.flushBuffer();
-            return null;
-        } catch (DomainException e) {
-            throw e;
-        }
+        CountingInputStream data = new CountingInputStream(documentRequest.generateDocument());
+    
+        response.setContentType("application/pdf");
+        response.addHeader("Content-Disposition", "attachment; filename=" + documentRequest.getReportFileName() + ".pdf");
+    
+        final ServletOutputStream writer = response.getOutputStream();
+        copy(data, writer);
+        writer.flush();
+        writer.close();
+    
+        response.flushBuffer();
+        return null;
     }
 
     public ActionForward prepareConcludeDocumentRequest(ActionMapping mapping, ActionForm actionForm, HttpServletRequest request,

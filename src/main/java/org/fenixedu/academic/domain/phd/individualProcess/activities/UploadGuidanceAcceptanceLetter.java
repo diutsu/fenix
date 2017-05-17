@@ -18,7 +18,10 @@
  */
 package org.fenixedu.academic.domain.phd.individualProcess.activities;
 
+import java.io.IOException;
+
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
 import org.fenixedu.academic.domain.phd.PhdParticipant;
 import org.fenixedu.academic.domain.phd.PhdParticipantBean;
@@ -40,10 +43,14 @@ public class UploadGuidanceAcceptanceLetter extends PhdIndividualProgramProcessA
         PhdParticipantBean guidingBean = (PhdParticipantBean) object;
         PhdParticipant guiding = guidingBean.getParticipant();
         PhdProgramDocumentUploadBean acceptanceLetter = guidingBean.getGuidingAcceptanceLetter();
-
-        new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", acceptanceLetter.getFileContent(),
-                acceptanceLetter.getFilename(), userView.getPerson());
-
+    
+        try {
+            new PhdGuiderAcceptanceLetter(guiding, acceptanceLetter.getType(), "", acceptanceLetter.getFile(),
+                    acceptanceLetter.getFilename(), userView.getPerson());
+        } catch (IOException e) {
+            throw new DomainException(e.getMessage());
+        }
+    
         return process;
     }
 

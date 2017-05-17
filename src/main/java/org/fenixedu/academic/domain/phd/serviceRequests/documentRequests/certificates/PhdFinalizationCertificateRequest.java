@@ -18,11 +18,8 @@
  */
 package org.fenixedu.academic.domain.phd.serviceRequests.documentRequests.certificates;
 
-import java.util.List;
-
 import org.fenixedu.academic.domain.accounting.EventType;
 import org.fenixedu.academic.domain.accounting.events.serviceRequests.PhdFinalizationCertificateRequestEvent;
-import org.fenixedu.academic.domain.documents.DocumentRequestGeneratedDocument;
 import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.exceptions.PhdDomainOperationException;
 import org.fenixedu.academic.domain.phd.serviceRequests.PhdDocumentRequestCreateBean;
@@ -30,8 +27,6 @@ import org.fenixedu.academic.domain.phd.serviceRequests.documentRequests.PhdRegi
 import org.fenixedu.academic.domain.serviceRequests.RectorateSubmissionBatch;
 import org.fenixedu.academic.domain.serviceRequests.documentRequests.DocumentRequestType;
 import org.fenixedu.academic.dto.serviceRequests.AcademicServiceRequestBean;
-import org.fenixedu.academic.report.academicAdministrativeOffice.AdministrativeOfficeDocument;
-import org.fenixedu.academic.util.report.ReportsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,23 +113,6 @@ public class PhdFinalizationCertificateRequest extends PhdFinalizationCertificat
             if (getLastGeneratedDocument() == null) {
                 generateDocument();
             }
-        }
-    }
-
-    @Override
-    public byte[] generateDocument() {
-        try {
-            final List<AdministrativeOfficeDocument> documents =
-                    AdministrativeOfficeDocument.AdministrativeOfficeDocumentCreator.create(this);
-
-            final AdministrativeOfficeDocument[] array = {};
-            byte[] data = ReportsUtils.generateReport(documents.toArray(array)).getData();
-
-            DocumentRequestGeneratedDocument.store(this, documents.iterator().next().getReportFileName() + ".pdf", data);
-            return data;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new DomainException("error.phdDiplomaRequest.errorGeneratingDocument");
         }
     }
 

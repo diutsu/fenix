@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.phd.thesis.meeting;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.fenixedu.academic.domain.Person;
@@ -32,16 +34,16 @@ public class PhdMeetingMinutesDocument extends PhdMeetingMinutesDocument_Base {
     }
 
     public PhdMeetingMinutesDocument(PhdMeeting meeting, PhdIndividualProgramDocumentType documentType, String remarks,
-            byte[] content, String filename, Person uploader) {
+            InputStream fileStream, String filename, Person uploader) throws IOException {
         this();
-        init(meeting, documentType, remarks, content, filename, uploader);
+        init(meeting, documentType, remarks, fileStream, filename, uploader);
 
     }
 
-    protected void init(PhdMeeting meeting, PhdIndividualProgramDocumentType documentType, String remarks, byte[] content,
-            String filename, Person uploader) {
+    protected void init(PhdMeeting meeting, PhdIndividualProgramDocumentType documentType, String remarks, InputStream fileStream,
+            String filename, Person uploader) throws IOException {
 
-        checkParameters(meeting.getMeetingProcess(), documentType, content, filename, uploader);
+        checkParameters(meeting.getMeetingProcess(), documentType, fileStream, filename, uploader);
 
         setDocumentVersion(meeting, documentType);
 
@@ -51,7 +53,7 @@ public class PhdMeetingMinutesDocument extends PhdMeetingMinutesDocument_Base {
         super.setUploader(uploader);
         super.setDocumentAccepted(true);
 
-        super.init(filename, filename, content);
+        super.init(filename, filename, fileStream);
     }
 
     protected void setDocumentVersion(PhdMeeting meeting, PhdIndividualProgramDocumentType documentType) {

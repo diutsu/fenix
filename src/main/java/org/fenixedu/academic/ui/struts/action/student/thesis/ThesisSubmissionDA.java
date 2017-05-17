@@ -244,9 +244,8 @@ public class ThesisSubmissionDA extends AbstractManageThesisDA {
         }
 
         if (bean != null && bean.getFile() != null) {
-            byte[] bytes = ByteStreams.toByteArray(bean.getFile());
             try {
-                CreateThesisDissertationFile.runCreateThesisDissertationFile(getThesis(request), bytes, bean.getSimpleFileName(),
+                CreateThesisDissertationFile.runCreateThesisDissertationFile(getThesis(request), bean.getFile(), bean.getSimpleFileName(),
                         bean.getTitle(), bean.getSubTitle(), bean.getLanguage());
             } catch (DomainException e) {
                 addActionMessage("error", request, e.getKey(), e.getArgs());
@@ -285,9 +284,8 @@ public class ThesisSubmissionDA extends AbstractManageThesisDA {
         RenderUtils.invalidateViewState();
 
         if (bean != null && bean.getFile() != null) {
-            byte[] bytes = ByteStreams.toByteArray(bean.getFile());
             try {
-                CreateThesisAbstractFile.runCreateThesisAbstractFile(getThesis(request), bytes, bean.getSimpleFileName(), null,
+                CreateThesisAbstractFile.runCreateThesisAbstractFile(getThesis(request), bean.getFile(), bean.getSimpleFileName(), null,
                         null, null);
             } catch (DomainException e) {
                 addActionMessage("error", request, e.getKey(), e.getArgs());

@@ -18,6 +18,9 @@
  */
 package org.fenixedu.academic.domain.phd.guidance;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.lang.StringUtils;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -31,16 +34,16 @@ public class PhdGuidanceDocument extends PhdGuidanceDocument_Base {
     }
 
     public PhdGuidanceDocument(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks,
-            byte[] content, String filename, Person uploader) {
+        InputStream fileStream, String filename, Person uploader) throws IOException {
         this();
-        init(process, documentType, remarks, content, filename, uploader);
+        init(process, documentType, remarks, fileStream, filename, uploader);
     }
 
     @Override
-    protected void init(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks, byte[] content,
-            String filename, Person uploader) {
+    protected void init(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks, InputStream
+        fileStream, String filename, Person uploader) throws IOException {
         checkParameters(process, documentType, remarks);
-        super.init(process, documentType, remarks, content, filename, uploader);
+        super.init(process, documentType, remarks, fileStream, filename, uploader);
     }
 
     private void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks) {

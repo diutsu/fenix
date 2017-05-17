@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.phd;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -55,16 +57,17 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
     }
 
     public PhdProgramProcessDocument(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks,
-            byte[] content, String filename, Person uploader) {
+            InputStream fileStream, String filename, Person uploader) throws IOException {
         this();
-        init(process, documentType, remarks, content, filename, uploader);
+        init(process, documentType, remarks, fileStream, filename, uploader);
 
     }
 
-    protected void init(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks, byte[] content,
-            String filename, Person uploader) {
+    protected void init(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, String remarks, InputStream
+        fileStream,
+            String filename, Person uploader) throws IOException {
 
-        checkParameters(process, documentType, content, filename, uploader);
+        checkParameters(process, documentType, fileStream, filename, uploader);
 
         setDocumentVersion(process, documentType);
 
@@ -74,7 +77,7 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
         super.setUploader(uploader);
         super.setDocumentAccepted(true);
 
-        super.init(filename, filename, content);
+        super.init(filename, filename, fileStream);
     }
 
     @Override
@@ -95,7 +98,7 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
         }
     }
 
-    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, byte[] content,
+    protected void checkParameters(PhdProgramProcess process, PhdIndividualProgramDocumentType documentType, InputStream fileStream,
             String filename, Person uploader) {
 
         String[] args = {};
@@ -109,7 +112,7 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
                     args1);
         }
 
-        if (documentType == null || content == null || content.length == 0 || StringUtils.isEmpty(filename)) {
+        if (documentType == null || fileStream == null || StringUtils.isEmpty(filename)) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.documentType.and.file.cannot.be.null");
         }
     }
@@ -165,7 +168,7 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
     }
 
     public PhdProgramProcessDocument replaceDocument(PhdIndividualProgramDocumentType documentType, String remarks,
-            byte[] content, String filename, Person uploader) {
+           InputStream fileStream, String filename, Person uploader) throws IOException {
         if (!this.getClass().equals(PhdProgramProcessDocument.class)) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.override.replaceDocument.method.on.this.class");
         }
@@ -174,7 +177,7 @@ public class PhdProgramProcessDocument extends PhdProgramProcessDocument_Base {
             throw new DomainException("error.phd.PhdProgramProcessDocument.type.must.be.equal");
         }
 
-        return new PhdProgramProcessDocument(getPhdProgramProcess(), documentType, remarks, content, filename, uploader);
+        return new PhdProgramProcessDocument(getPhdProgramProcess(), documentType, remarks, fileStream, filename, uploader);
     }
 
     public boolean isReplaceable() {

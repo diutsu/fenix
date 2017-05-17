@@ -19,6 +19,7 @@
 package org.fenixedu.academic.ui.struts.action.rectorate.batches;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,11 +41,14 @@ import org.fenixedu.academic.ui.struts.action.commons.documentRequestExcel.Docum
 import org.fenixedu.academic.ui.struts.action.commons.zip.ZipUtils;
 import org.fenixedu.bennu.struts.annotations.Forward;
 import org.fenixedu.bennu.struts.annotations.Forwards;
+import org.fenixedu.bennu.struts.annotations.Input;
 import org.fenixedu.bennu.struts.annotations.Mapping;
 import org.fenixedu.bennu.struts.portal.EntryPoint;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 
 import pt.ist.fenixframework.FenixFramework;
+
+import static org.apache.commons.io.IOUtils.copy;
 
 @StrutsFunctionality(app = RectorateApplication.class, path = "incoming-batches", titleKey = "title.rectorateSubmission.received")
 @Mapping(path = "/rectorateIncomingBatches", module = "rectorate")
@@ -130,14 +135,14 @@ public class RectorateIncomingBatchesDispatchAction extends FenixDispatchAction 
             HttpServletResponse response) throws IOException {
         final IDocumentRequest documentRequest = getDocumentRequest(request);
         try {
-            byte[] data = documentRequest.generateDocument();
+            CountingInputStream data = new CountingInputStream(documentRequest.generateDocument());
 
-            response.setContentLength(data.length);
             response.setContentType("application/pdf");
             response.addHeader("Content-Disposition", "attachment; filename=" + documentRequest.getReportFileName() + ".pdf");
 
             final ServletOutputStream writer = response.getOutputStream();
-            writer.write(data);
+            copy(data, writer);
+            response.setContentLength((int) data.getByteCount());
             writer.flush();
             writer.close();
 

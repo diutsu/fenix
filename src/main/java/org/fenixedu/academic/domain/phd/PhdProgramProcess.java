@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,12 +42,12 @@ abstract public class PhdProgramProcess extends PhdProgramProcess_Base {
         super();
     }
 
-    public PhdProgramProcessDocument addDocument(PhdProgramDocumentUploadBean each, Person responsible) {
-        return new PhdProgramProcessDocument(this, each.getType(), each.getRemarks(), each.getFileContent(), each.getFilename(),
+    public PhdProgramProcessDocument addDocument(PhdProgramDocumentUploadBean each, Person responsible) throws IOException {
+        return new PhdProgramProcessDocument(this, each.getType(), each.getRemarks(), each.getFile(), each.getFilename(),
                 responsible);
     }
 
-    protected void addDocuments(List<PhdProgramDocumentUploadBean> documents, Person responsible) {
+    protected void addDocuments(List<PhdProgramDocumentUploadBean> documents, Person responsible) throws IOException {
         for (final PhdProgramDocumentUploadBean each : documents) {
             addDocument(each, responsible);
         }

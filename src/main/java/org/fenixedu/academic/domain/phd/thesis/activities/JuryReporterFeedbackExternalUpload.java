@@ -41,7 +41,7 @@ public class JuryReporterFeedbackExternalUpload extends ExternalAccessPhdActivit
         final PhdProgramDocumentUploadBean documentBean = bean.getDocumentBean();
         if (documentBean.hasAnyInformation()) {
             new PhdThesisReportFeedbackDocument(bean.getParticipant().getThesisJuryElement(process), documentBean.getRemarks(),
-                    documentBean.getFileContent(), documentBean.getFilename(), null);
+                    documentBean.getFile(), documentBean.getFilename(), null);
         }
 
         return process;

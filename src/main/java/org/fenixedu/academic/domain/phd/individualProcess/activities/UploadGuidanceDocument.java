@@ -19,10 +19,13 @@
 package org.fenixedu.academic.domain.phd.individualProcess.activities;
 
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.guidance.PhdGuidanceDocument;
 import org.fenixedu.bennu.core.domain.User;
+
+import java.io.IOException;
 
 public class UploadGuidanceDocument extends PhdIndividualProgramProcessActivity {
 
@@ -42,10 +45,14 @@ public class UploadGuidanceDocument extends PhdIndividualProgramProcessActivity 
     @Override
     protected PhdIndividualProgramProcess executeActivity(PhdIndividualProgramProcess process, User userView, Object object) {
         PhdProgramDocumentUploadBean bean = (PhdProgramDocumentUploadBean) object;
-
-        new PhdGuidanceDocument(process, bean.getType(), bean.getRemarks(), bean.getFileContent(), bean.getFilename(),
-                userView.getPerson());
-
+    
+        try {
+            new PhdGuidanceDocument(process, bean.getType(), bean.getRemarks(), bean.getFile(), bean.getFilename(),
+                    userView.getPerson());
+        } catch (IOException e) {
+            throw new DomainException("error.file");
+        }
+    
         return process;
     }
 

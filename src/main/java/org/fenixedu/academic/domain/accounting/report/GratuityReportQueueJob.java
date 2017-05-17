@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.accounting.report;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class GratuityReportQueueJob extends GratuityReportQueueJob_Base {
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("text/csv");
-        queueJobResult.setContent(byteArrayOS.toByteArray());
+        queueJobResult.setStream(new ByteArrayInputStream(byteArrayOS.toByteArray()));
 
         logger.info("Job " + getFilename() + " completed");
 

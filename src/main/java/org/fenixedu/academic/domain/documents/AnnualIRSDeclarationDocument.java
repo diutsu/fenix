@@ -24,14 +24,18 @@ import org.joda.time.LocalDate;
 
 import pt.ist.fenixframework.Atomic;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class AnnualIRSDeclarationDocument extends AnnualIRSDeclarationDocument_Base {
 
-    public AnnualIRSDeclarationDocument(Person addressee, Person operator, String filename, byte[] content, Integer year) {
+    public AnnualIRSDeclarationDocument(Person addressee, Person operator, String filename, InputStream fileStream, Integer year)
+        throws IOException {
         super();
         checkParameters(year);
         checkRulesToCreate(addressee, year);
         setYear(year);
-        init(GeneratedDocumentType.ANNUAL_IRS_DECLARATION, addressee, operator, filename, content);
+        init(GeneratedDocumentType.ANNUAL_IRS_DECLARATION, addressee, operator, filename, fileStream);
     }
 
     @Override
@@ -52,14 +56,14 @@ public class AnnualIRSDeclarationDocument extends AnnualIRSDeclarationDocument_B
     }
 
     @Atomic
-    public AnnualIRSDeclarationDocument generateAnotherDeclaration(Person operator, byte[] content) {
+    public AnnualIRSDeclarationDocument generateAnotherDeclaration(Person operator, InputStream fileStream) throws IOException {
 
         final Person addressee = getAddressee();
         final Integer year = getYear();
 
         delete();
 
-        return new AnnualIRSDeclarationDocument(addressee, operator, buildFilename(addressee, year), content, year);
+        return new AnnualIRSDeclarationDocument(addressee, operator, buildFilename(addressee, year), fileStream, year);
     }
 
     static private String buildFilename(Person person, Integer year) {
@@ -67,8 +71,9 @@ public class AnnualIRSDeclarationDocument extends AnnualIRSDeclarationDocument_B
     }
 
     @Atomic
-    static public AnnualIRSDeclarationDocument create(Person addressee, Person operator, byte[] content, Integer year) {
-        return new AnnualIRSDeclarationDocument(addressee, operator, buildFilename(addressee, year), content, year);
+    static public AnnualIRSDeclarationDocument create(Person addressee, Person operator, InputStream fileStream, Integer year)
+        throws IOException {
+        return new AnnualIRSDeclarationDocument(addressee, operator, buildFilename(addressee, year), fileStream, year);
     }
 
 }

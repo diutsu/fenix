@@ -22,17 +22,21 @@ import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accessControl.AcademicAuthorizationGroup;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
 import org.fenixedu.academic.domain.accounting.CreditNote;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.organizationalStructure.Party;
 import org.fenixedu.academic.predicate.AccessControl;
 import org.fenixedu.bennu.core.domain.User;
 
 import pt.ist.fenixframework.Atomic;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Pedro Santos (pmrsa)
  */
 public class CreditNoteGeneratedDocument extends CreditNoteGeneratedDocument_Base {
-    protected CreditNoteGeneratedDocument(CreditNote source, Party addressee, Person operator, String filename, byte[] content) {
+    protected CreditNoteGeneratedDocument(CreditNote source, Party addressee, Person operator, String filename, InputStream content) throws IOException {
         super();
         setSource(source);
         init(GeneratedDocumentType.CREDIT_NOTE, addressee, operator, filename, content);
@@ -51,8 +55,12 @@ public class CreditNoteGeneratedDocument extends CreditNoteGeneratedDocument_Bas
     }
 
     @Atomic
-    public static void store(CreditNote source, String filename, byte[] content) {
-        new CreditNoteGeneratedDocument(source, source.getReceipt().getPerson(), AccessControl.getPerson(), filename, content);
+    public static void store(CreditNote source, String filename, InputStream content) {
+        try {
+            new CreditNoteGeneratedDocument(source, source.getReceipt().getPerson(), AccessControl.getPerson(), filename, content);
+        } catch (IOException e) {
+            throw new DomainException("error.reading.file");
+        }
     }
 
 }

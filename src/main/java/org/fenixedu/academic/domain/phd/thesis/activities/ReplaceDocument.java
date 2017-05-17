@@ -19,11 +19,14 @@
 package org.fenixedu.academic.domain.phd.thesis.activities;
 
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.PhdProgramProcessDocument;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcess;
 import org.fenixedu.academic.predicate.AccessControl;
 import org.fenixedu.bennu.core.domain.User;
+
+import java.io.IOException;
 
 public class ReplaceDocument extends PhdThesisActivity {
 
@@ -38,10 +41,14 @@ public class ReplaceDocument extends PhdThesisActivity {
     protected PhdThesisProcess executeActivity(PhdThesisProcess process, User userView, Object object) {
         PhdProgramDocumentUploadBean documentBean = (PhdProgramDocumentUploadBean) object;
         PhdProgramProcessDocument document = process.getLatestDocumentVersionFor(documentBean.getType());
-
-        document.replaceDocument(documentBean.getType(), documentBean.getRemarks(), documentBean.getFileContent(),
-                documentBean.getFilename(), AccessControl.getPerson());
-
+    
+        try {
+            document.replaceDocument(documentBean.getType(), documentBean.getRemarks(), documentBean.getFile(),
+                    documentBean.getFilename(), AccessControl.getPerson());
+        } catch (IOException e) {
+            throw new DomainException("error.file");
+        }
+    
         return process;
     }
 }

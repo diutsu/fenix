@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.ui.struts.action.administrativeOffice.payments;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -50,6 +52,7 @@ import org.fenixedu.academic.service.services.accounting.EditReceipt;
 import org.fenixedu.academic.service.services.accounting.RegisterReceiptPrint;
 import org.fenixedu.academic.ui.struts.FenixActionForm;
 import org.fenixedu.academic.ui.struts.action.administrativeOffice.student.SearchForStudentsDA;
+import org.fenixedu.academic.util.report.ReportPrinter;
 import org.fenixedu.academic.util.report.ReportsUtils;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.struts.annotations.Forward;
@@ -272,13 +275,16 @@ public class ReceiptsManagementDA extends PaymentsManagementDispatchAction {
 
             final ReceiptDocument original = new ReceiptDocument(receipt, true);
             final ReceiptDocument duplicate = new ReceiptDocument(receipt, false);
+    
+            ReportPrinter.ReportResult report = ReportsUtils.generateReport(original, duplicate);
+            CountingInputStream stream = new CountingInputStream(new ByteArrayInputStream(report.getData()));
 
-            final byte[] data = ReportsUtils.generateReport(original, duplicate).getData();
-
-            ReceiptGeneratedDocument.store(receipt, original.getReportFileName() + ".pdf", data);
+            ReceiptGeneratedDocument.store(receipt, original.getReportFileName() + ".pdf", stream);
 
             RegisterReceiptPrint.run(receipt, getUserView(request).getPerson());
-
+    
+            final byte[] data = report.getData();
+            
             response.setContentLength(data.length);
             response.setContentType("application/pdf");
             response.addHeader("Content-Disposition", String.format("attachment; filename=%s.pdf", original.getReportFileName()));

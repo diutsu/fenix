@@ -18,6 +18,8 @@
  */
 package org.fenixedu.academic.domain.phd.serviceRequests.documentRequests;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,13 +143,13 @@ public abstract class PhdDocumentRequest extends PhdDocumentRequest_Base impleme
     }
 
     @Override
-    public byte[] generateDocument() {
+    public InputStream generateDocument() {
         final List<AdministrativeOfficeDocument> documents =
                 AdministrativeOfficeDocument.AdministrativeOfficeDocumentCreator.create(this);
         final AdministrativeOfficeDocument[] array = {};
-        byte[] data = ReportsUtils.generateReport(documents.toArray(array)).getData();
-        DocumentRequestGeneratedDocument.store(this, documents.iterator().next().getReportFileName() + ".pdf", data);
-        return data;
+        InputStream stream = new ByteArrayInputStream(ReportsUtils.generateReport(documents.toArray(array)).getData());
+        DocumentRequestGeneratedDocument.store(this, documents.iterator().next().getReportFileName() + ".pdf", stream);
+        return stream;
     }
 
     @Override

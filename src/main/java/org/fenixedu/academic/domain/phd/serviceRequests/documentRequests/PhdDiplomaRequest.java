@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.serviceRequests.documentRequests;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -263,23 +264,6 @@ public class PhdDiplomaRequest extends PhdDiplomaRequest_Base implements IDiplom
     @Override
     public boolean isProgrammeLinkVisible() {
         return getPhdIndividualProgramProcess().isCurrentUserAllowedToManageProcess();
-    }
-
-    @Override
-    public byte[] generateDocument() {
-        try {
-            final List<AdministrativeOfficeDocument> documents =
-                    AdministrativeOfficeDocument.AdministrativeOfficeDocumentCreator.create(this);
-
-            final AdministrativeOfficeDocument[] array = {};
-            byte[] data = ReportsUtils.generateReport(documents.toArray(array)).getData();
-
-            DocumentRequestGeneratedDocument.store(this, documents.iterator().next().getReportFileName() + ".pdf", data);
-            return data;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new DomainException("error.phdDiplomaRequest.errorGeneratingDocument");
-        }
     }
 
 }

@@ -21,6 +21,7 @@ package org.fenixedu.academic.domain.documents;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accessControl.AcademicAuthorizationGroup;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.organizationalStructure.Party;
 import org.fenixedu.academic.domain.person.RoleType;
 import org.fenixedu.academic.domain.serviceRequests.AcademicServiceRequest;
@@ -30,15 +31,18 @@ import org.fenixedu.bennu.core.domain.User;
 
 import pt.ist.fenixframework.Atomic;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Pedro Santos (pmrsa)
  */
 public class DocumentRequestGeneratedDocument extends DocumentRequestGeneratedDocument_Base {
     protected DocumentRequestGeneratedDocument(IDocumentRequest source, Party addressee, Person operator, String filename,
-            byte[] content) {
+            InputStream fileStream) throws IOException {
         super();
         setSource((AcademicServiceRequest) source);
-        init(GeneratedDocumentType.determineType(source.getDocumentRequestType()), addressee, operator, filename, content);
+        init(GeneratedDocumentType.determineType(source.getDocumentRequestType()), addressee, operator, filename, fileStream);
     }
 
     @Override
@@ -54,8 +58,12 @@ public class DocumentRequestGeneratedDocument extends DocumentRequestGeneratedDo
     }
 
     @Atomic
-    public static void store(IDocumentRequest source, String filename, byte[] content) {
-        new DocumentRequestGeneratedDocument(source, source.getPerson(), AccessControl.getPerson(), filename, content);
+    public static void store(IDocumentRequest source, String filename, InputStream content) {
+        try {
+            new DocumentRequestGeneratedDocument(source, source.getPerson(), AccessControl.getPerson(), filename, content);
+        } catch (IOException e) {
+            throw new DomainException("error.reading.file");
+        }
     }
 
 }

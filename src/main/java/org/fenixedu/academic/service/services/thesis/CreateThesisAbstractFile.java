@@ -19,6 +19,7 @@
 package org.fenixedu.academic.service.services.thesis;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.fenixedu.academic.domain.person.RoleType;
@@ -45,8 +46,7 @@ public class CreateThesisAbstractFile extends CreateThesisFile {
     }
 
     @Override
-    protected void updateThesis(Thesis thesis, ThesisFile file, String title, String subTitle, Locale language, String fileName,
-            byte[] bytes) throws FenixServiceException, IOException {
+    protected void updateThesis(Thesis thesis, ThesisFile file, String title, String subTitle, Locale language, String fileName) throws FenixServiceException, IOException {
         thesis.setExtendedAbstract(file);
     }
 
@@ -55,9 +55,9 @@ public class CreateThesisAbstractFile extends CreateThesisFile {
     private static final CreateThesisAbstractFile serviceInstance = new CreateThesisAbstractFile();
 
     @Atomic
-    public static ThesisFile runCreateThesisAbstractFile(Thesis thesis, byte[] bytes, String fileName, String title,
+    public static ThesisFile runCreateThesisAbstractFile(Thesis thesis, InputStream stream, String fileName, String title,
             String subTitle, Locale language) throws FenixServiceException, IOException {
         ScientificCouncilOrStudentThesisAuthorizationFilter.instance.execute(thesis);
-        return serviceInstance.run(thesis, bytes, fileName, title, subTitle, language);
+        return serviceInstance.run(thesis, stream, fileName, title, subTitle, language);
     }
 }

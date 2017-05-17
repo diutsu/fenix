@@ -27,6 +27,8 @@ import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcessStateType;
 import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.LocalDate;
 
+import java.io.IOException;
+
 public class RatifyFinalThesis extends PhdThesisActivity {
 
     @Override
@@ -53,7 +55,11 @@ public class RatifyFinalThesis extends PhdThesisActivity {
 
         for (final PhdProgramDocumentUploadBean document : bean.getDocuments()) {
             if (document.hasAnyInformation()) {
-                process.addDocument(document, userView.getPerson());
+                try {
+                    process.addDocument(document, userView.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException("error.file");
+                }
             }
         }
 

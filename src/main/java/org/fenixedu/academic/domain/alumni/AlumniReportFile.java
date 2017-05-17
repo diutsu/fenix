@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.alumni;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,13 +73,6 @@ public class AlumniReportFile extends AlumniReportFile_Base {
 
         setFullReport(fullReport);
         setOnlyRegisteredAlumni(onlyRegisteredAlumni);
-
-        if ("fullReport" == null || "fullReport".isEmpty()) {
-            throw new DomainException("error.domain.alumni.alumni.report.file.full.report.is.null", null);
-        }
-        if ("onlyRegisteredAlumni" == null || "onlyRegisteredAlumni".isEmpty()) {
-            throw new DomainException("error.domain.alumni.alumni.report.file.only.alumni.is.null", null);
-        }
     }
 
     @Override
@@ -89,7 +83,7 @@ public class AlumniReportFile extends AlumniReportFile_Base {
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("application/vnd.ms-excel");
-        queueJobResult.setContent(byteArrayOS.toByteArray());
+        queueJobResult.setStream(new ByteArrayInputStream(byteArrayOS.toByteArray()));
 
         logger.info("Job " + getFilename() + " completed");
 

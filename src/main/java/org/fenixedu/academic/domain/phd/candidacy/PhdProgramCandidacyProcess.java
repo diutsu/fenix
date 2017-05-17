@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.candidacy;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -351,7 +352,11 @@ public class PhdProgramCandidacyProcess extends PhdProgramCandidacyProcess_Base 
         setWhenRatified(bean.getWhenRatified());
 
         if (bean.getRatificationFile().hasAnyInformation()) {
-            addDocument(bean.getRatificationFile(), responsible);
+            try {
+                addDocument(bean.getRatificationFile(), responsible);
+            } catch (IOException e) {
+                throw new DomainException("error.reading.file");
+            }
         }
 
         if (!getIndividualProgramProcess().getPhdConfigurationIndividualProgramProcess().isMigratedProcess()

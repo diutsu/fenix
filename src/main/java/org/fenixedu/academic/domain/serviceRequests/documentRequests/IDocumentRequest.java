@@ -26,6 +26,8 @@ import org.fenixedu.academic.domain.serviceRequests.IAcademicServiceRequest;
 import org.fenixedu.academic.domain.student.Student;
 import org.joda.time.DateTime;
 
+import java.io.InputStream;
+
 public interface IDocumentRequest extends IAcademicServiceRequest {
     public DocumentRequestType getDocumentRequestType();
 
@@ -53,7 +55,7 @@ public interface IDocumentRequest extends IAcademicServiceRequest {
 
     public GeneratedDocument getLastGeneratedDocument();
 
-    public byte[] generateDocument();
+    public InputStream generateDocument();
 
     public String getReportFileName();
 }

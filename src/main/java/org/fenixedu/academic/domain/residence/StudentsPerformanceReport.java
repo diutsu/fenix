@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.residence;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -89,7 +90,7 @@ public class StudentsPerformanceReport extends StudentsPerformanceReport_Base {
 
         final QueueJobResult queueJobResult = new QueueJobResult();
         queueJobResult.setContentType("application/txt");
-        queueJobResult.setContent(byteArrayOS.toByteArray());
+        queueJobResult.setStream(new ByteArrayInputStream(byteArrayOS.toByteArray()));
 
         logger.info("Job " + getFilename() + " completed");
 

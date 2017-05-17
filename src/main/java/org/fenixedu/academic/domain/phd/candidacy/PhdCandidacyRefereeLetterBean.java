@@ -56,7 +56,6 @@ public class PhdCandidacyRefereeLetterBean implements Serializable {
     private Country refereeCountry;
 
     private transient InputStream file;
-    private byte[] fileContent;
     private String filename;
 
     public PhdCandidacyRefereeLetterBean() {
@@ -177,19 +176,6 @@ public class PhdCandidacyRefereeLetterBean implements Serializable {
 
     public void setFile(InputStream file) {
         this.file = file;
-
-        if (file != null) {
-            final ByteArrayOutputStream result = new ByteArrayOutputStream();
-            try {
-                ByteStreams.copy(this.file, result);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            this.fileContent = result.toByteArray();
-        } else {
-            this.fileContent = null;
-        }
     }
 
     public String getFilename() {
@@ -198,14 +184,6 @@ public class PhdCandidacyRefereeLetterBean implements Serializable {
 
     public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    public byte[] getFileContent() {
-        return this.fileContent;
-    }
-
-    public boolean hasFileContent() {
-        return this.fileContent != null;
     }
 
     public Person getPerson() {
@@ -278,10 +256,6 @@ public class PhdCandidacyRefereeLetterBean implements Serializable {
 
     public void setCandidacyReferee(PhdCandidacyReferee candidacyReferee) {
         this.candidacyReferee = candidacyReferee;
-    }
-
-    public void setFileContent(byte[] fileContent) {
-        this.fileContent = fileContent;
     }
 
 }

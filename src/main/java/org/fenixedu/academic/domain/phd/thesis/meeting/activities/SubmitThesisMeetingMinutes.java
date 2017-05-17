@@ -18,7 +18,10 @@
  */
 package org.fenixedu.academic.domain.phd.thesis.meeting.activities;
 
+import java.io.IOException;
+
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcessStateType;
 import org.fenixedu.academic.domain.phd.thesis.meeting.PhdMeeting;
@@ -53,7 +56,12 @@ public class SubmitThesisMeetingMinutes extends PhdMeetingSchedulingActivity {
 
         final PhdProgramDocumentUploadBean document = bean.getDocument();
         if (document.hasAnyInformation()) {
-            meeting.addDocument(document, userView.getPerson());
+            try {
+                meeting.addDocument(document, userView.getPerson());
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new DomainException("error.reading.file");
+            }
         }
 
         if (bean.isToNotify()) {

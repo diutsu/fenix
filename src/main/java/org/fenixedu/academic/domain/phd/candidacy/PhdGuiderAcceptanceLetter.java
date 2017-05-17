@@ -18,6 +18,9 @@
  */
 package org.fenixedu.academic.domain.phd.candidacy;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramDocumentType;
@@ -32,18 +35,18 @@ public class PhdGuiderAcceptanceLetter extends PhdGuiderAcceptanceLetter_Base {
     }
 
     public PhdGuiderAcceptanceLetter(PhdParticipant guider, PhdIndividualProgramDocumentType documentType, String remarks,
-            byte[] content, String filename, Person uploader) {
+        InputStream fileStream, String filename, Person uploader) throws IOException {
         this();
 
-        init(guider, documentType, remarks, content, filename, uploader);
+        init(guider, documentType, remarks, fileStream, filename, uploader);
     }
 
-    private void init(PhdParticipant guider, PhdIndividualProgramDocumentType documentType, String remarks, byte[] content,
-            String filename, Person uploader) {
+    private void init(PhdParticipant guider, PhdIndividualProgramDocumentType documentType, String remarks,
+        InputStream fileStream, String filename, Person uploader) throws IOException {
         PhdIndividualProgramProcess process = guider.getIndividualProcess();
 
         checkParameters(guider, documentType);
-        super.init(process, documentType, remarks, content, filename, uploader);
+        super.init(process, documentType, remarks, fileStream, filename, uploader);
 
         setPhdGuider(guider);
     }

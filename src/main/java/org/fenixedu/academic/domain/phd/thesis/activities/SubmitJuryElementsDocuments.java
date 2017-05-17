@@ -24,12 +24,15 @@ package org.fenixedu.academic.domain.phd.thesis.activities;
 import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
 import org.fenixedu.academic.domain.caseHandling.PreConditionNotValidException;
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.alert.AlertService;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcess;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcessBean;
 import org.fenixedu.academic.domain.phd.thesis.PhdThesisProcessStateType;
 import org.fenixedu.bennu.core.domain.User;
+
+import java.io.IOException;
 
 public class SubmitJuryElementsDocuments extends PhdThesisActivity {
 
@@ -64,9 +67,13 @@ public class SubmitJuryElementsDocuments extends PhdThesisActivity {
 
         for (final PhdProgramDocumentUploadBean each : bean.getDocuments()) {
             if (each.hasAnyInformation()) {
-
-                process.addDocument(each, userView.getPerson());
-
+    
+                try {
+                    process.addDocument(each, userView.getPerson());
+                } catch (IOException e) {
+                    throw new DomainException("error.file");
+                }
+    
                 if (bean.getGenerateAlert()) {
                     alertIfNecessary(bean, process, each, userView.getPerson());
                 }

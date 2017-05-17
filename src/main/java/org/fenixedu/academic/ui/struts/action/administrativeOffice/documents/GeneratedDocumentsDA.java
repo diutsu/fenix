@@ -45,6 +45,10 @@ import org.fenixedu.bennu.struts.portal.EntryPoint;
 import org.fenixedu.bennu.struts.portal.StrutsFunctionality;
 import org.joda.time.LocalDate;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 @StrutsFunctionality(app = AcademicAdminDocumentsApp.class, path = "generated-documents", titleKey = "label.documents",
         accessGroup = "academic(MANAGE_DOCUMENTS)")
 @Mapping(path = "/generatedDocuments", module = "academicAdministration", formBeanClass = FenixActionForm.class)
@@ -122,11 +126,11 @@ public class GeneratedDocumentsDA extends FenixDispatchAction {
 
         try {
 
-            if (declarationDTO.getCivilYear().intValue() >= new LocalDate().getYear()) {
+            if (declarationDTO.getCivilYear() >= new LocalDate().getYear()) {
                 addActionMessage("error", request, "error.annual.irs.declaration.year.must.be.previous.to.current");
 
             } else {
-                byte[] declaration = buildIRSCustomDeclaration(declarationDTO, person);
+                InputStream declaration = buildIRSCustomDeclaration(declarationDTO, person);
                 AnnualIRSDeclarationDocument.create(person, getLoggedPerson(request), declaration, declarationDTO.getCivilYear());
                 addActionMessage("success", request, "message.new.irs.annual.document.generated.with.success");
             }
@@ -136,8 +140,10 @@ public class GeneratedDocumentsDA extends FenixDispatchAction {
 
         } catch (final FenixActionException e) {
             addActionMessage("error", request, e.getMessage());
+        } catch (IOException e) {
+            addActionMessage("error", request,"error.file");
         }
-
+    
         return showAnnualIRSDocumentsInPayments(mapping, actionForm, request, response);
     }
 
@@ -150,7 +156,7 @@ public class GeneratedDocumentsDA extends FenixDispatchAction {
 
             final IRSDeclarationDTO declarationDTO =
                     new IRSDeclarationDTO(document.getYear().intValue(), document.getAddressee());
-            byte[] declaration = buildIRSCustomDeclaration(declarationDTO, document.getAddressee());
+            InputStream declaration = buildIRSCustomDeclaration(declarationDTO, document.getAddressee());
 
             document.generateAnotherDeclaration(AccessControl.getPerson(), declaration);
             addActionMessage("success", request, "message.new.irs.annual.document.generated.with.success");
@@ -160,19 +166,21 @@ public class GeneratedDocumentsDA extends FenixDispatchAction {
 
         } catch (final FenixActionException e) {
             addActionMessage("error", request, e.getMessage());
+        } catch (IOException e) {
+            addActionMessage("error", request, "error.file");
         }
-
+    
         return showAnnualIRSDocumentsInPayments(mapping, actionForm, request, response);
     }
 
-    private byte[] buildIRSCustomDeclaration(final IRSDeclarationDTO declarationDTO, final Person person)
+    private InputStream buildIRSCustomDeclaration(final IRSDeclarationDTO declarationDTO, final Person person)
             throws FenixActionException {
 
         addPayedAmount(person, declarationDTO.getCivilYear(), declarationDTO);
         final IRSCustomDeclaration customDeclaration = new IRSCustomDeclaration(declarationDTO);
 
-        return ReportsUtils.generateReport(customDeclaration.getReportTemplateKey(), customDeclaration.getParameters(),
-                customDeclaration.getDataSource()).getData();
+        return new ByteArrayInputStream(ReportsUtils.generateReport(customDeclaration.getReportTemplateKey(), customDeclaration.getParameters(),
+                customDeclaration.getDataSource()).getData());
     }
 
     private void addPayedAmount(Person person, int civilYear, final IRSDeclarationDTO declarationDTO) throws FenixActionException {

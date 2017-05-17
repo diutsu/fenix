@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.thesis.meeting;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import org.fenixedu.academic.domain.Person;
@@ -72,8 +73,8 @@ public class PhdMeeting extends PhdMeeting_Base {
         return getLatestDocumentVersion().getDocumentVersion();
     }
 
-    public void addDocument(PhdProgramDocumentUploadBean each, Person responsible) {
-        new PhdMeetingMinutesDocument(this, each.getType(), each.getRemarks(), each.getFileContent(), each.getFilename(),
+    public void addDocument(PhdProgramDocumentUploadBean each, Person responsible) throws IOException {
+        new PhdMeetingMinutesDocument(this, each.getType(), each.getRemarks(), each.getFile(), each.getFilename(),
                 responsible);
     }
 

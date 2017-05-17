@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.candidacy.feedbackRequest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -382,10 +383,14 @@ public class PhdCandidacyFeedbackRequestProcess extends PhdCandidacyFeedbackRequ
 
             if (bean.hasAnyInformation()) {
                 final PhdCandidacyFeedbackRequestElement element = process.getElement(userView.getPerson());
-
-                new PhdCandidacyFeedbackRequestDocument(element, bean.getRemarks(), bean.getFileContent(), bean.getFilename(),
-                        null);
-
+    
+                try {
+                    new PhdCandidacyFeedbackRequestDocument(element, bean.getRemarks(), bean.getFile(), bean.getFilename(),
+                            null);
+                } catch (IOException e) {
+                    throw new DomainException(e.getMessage());
+                }
+    
                 process.notifyCoordinationOfCandidacyFeedback(element);
             }
 
@@ -431,9 +436,13 @@ public class PhdCandidacyFeedbackRequestProcess extends PhdCandidacyFeedbackRequ
                         process.getCandidacyFeedbackRequestElement(bean.getParticipant());
 
                 final PhdProgramDocumentUploadBean documentBean = bean.getDocumentBean();
-                new PhdCandidacyFeedbackRequestDocument(element, documentBean.getRemarks(), documentBean.getFileContent(),
-                        documentBean.getFilename(), null);
-
+                try {
+                    new PhdCandidacyFeedbackRequestDocument(element, documentBean.getRemarks(), documentBean.getFile(),
+                            documentBean.getFilename(), null);
+                } catch (IOException e) {
+                    throw new DomainException(e.getMessage());
+                }
+    
                 process.notifyCoordinationOfCandidacyFeedback(element);
             }
 

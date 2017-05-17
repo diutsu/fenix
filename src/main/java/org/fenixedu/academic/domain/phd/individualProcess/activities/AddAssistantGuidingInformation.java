@@ -18,12 +18,15 @@
  */
 package org.fenixedu.academic.domain.phd.individualProcess.activities;
 
+import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramProcess;
 import org.fenixedu.academic.domain.phd.PhdParticipant;
 import org.fenixedu.academic.domain.phd.PhdParticipantBean;
 import org.fenixedu.academic.domain.phd.PhdProgramDocumentUploadBean;
 import org.fenixedu.academic.domain.phd.candidacy.PhdGuiderAcceptanceLetter;
 import org.fenixedu.bennu.core.domain.User;
+
+import java.io.IOException;
 
 public class AddAssistantGuidingInformation extends PhdIndividualProgramProcessActivity {
 
@@ -37,11 +40,15 @@ public class AddAssistantGuidingInformation extends PhdIndividualProgramProcessA
         PhdParticipantBean bean = (PhdParticipantBean) object;
         PhdParticipant addAssistantGuiding = process.addAssistantGuiding((PhdParticipantBean) object);
 
-        if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFileContent() != null) {
+        if (bean.getGuidingAcceptanceLetter() != null && bean.getGuidingAcceptanceLetter().getFile() != null) {
             PhdProgramDocumentUploadBean acceptanceLetter = bean.getGuidingAcceptanceLetter();
-            new PhdGuiderAcceptanceLetter(addAssistantGuiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
-                    .getFileContent(), bean.getGuidingAcceptanceLetter().getFilename(),
-                    userView != null ? userView.getPerson() : process.getPerson());
+            try {
+                new PhdGuiderAcceptanceLetter(addAssistantGuiding, acceptanceLetter.getType(), "", bean.getGuidingAcceptanceLetter()
+                        .getFile(), bean.getGuidingAcceptanceLetter().getFilename(),
+                        userView != null ? userView.getPerson() : process.getPerson());
+            } catch (IOException e) {
+                throw new DomainException("error.file");
+            }
         }
 
         return process;

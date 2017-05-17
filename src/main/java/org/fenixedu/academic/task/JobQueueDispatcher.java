@@ -91,7 +91,7 @@ public class JobQueueDispatcher extends CronTask {
             final QueueJobWithFile queueJobWithFile = (QueueJobWithFile) job;
             queueJobWithFile.setContentType(result.getContentType());
             QueueJobResultFile.store(queueJobWithFile, queueJobWithFile.getPerson(), queueJobWithFile.getFilename(),
-                    result.getContent());
+                    result.getStream());
         }
         job.setDone(true);
         job.setRootDomainObjectQueueUndone(null);

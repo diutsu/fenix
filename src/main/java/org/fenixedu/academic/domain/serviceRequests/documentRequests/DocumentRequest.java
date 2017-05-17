@@ -18,10 +18,6 @@
  */
 package org.fenixedu.academic.domain.serviceRequests.documentRequests;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-
 import org.fenixedu.academic.domain.ExecutionYear;
 import org.fenixedu.academic.domain.documents.DocumentRequestGeneratedDocument;
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -31,6 +27,12 @@ import org.fenixedu.academic.dto.serviceRequests.AcademicServiceRequestBean;
 import org.fenixedu.academic.dto.serviceRequests.DocumentRequestCreateBean;
 import org.fenixedu.academic.report.academicAdministrativeOffice.AdministrativeOfficeDocument;
 import org.fenixedu.academic.util.report.ReportsUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 public abstract class DocumentRequest extends DocumentRequest_Base implements IDocumentRequest {
     public static Comparator<AcademicServiceRequest> COMPARATOR_BY_REGISTRY_NUMBER = new Comparator<AcademicServiceRequest>() {
@@ -171,11 +173,11 @@ public abstract class DocumentRequest extends DocumentRequest_Base implements ID
     }
 
     @Override
-    public byte[] generateDocument() {
+    public InputStream generateDocument() {
         List<AdministrativeOfficeDocument> documents =
                 AdministrativeOfficeDocument.AdministrativeOfficeDocumentCreator.create(this);
         final AdministrativeOfficeDocument[] array = {};
-        byte[] data = ReportsUtils.generateReport(documents.toArray(array)).getData();
+        InputStream data = new ByteArrayInputStream(ReportsUtils.generateReport(documents.toArray(array)).getData());
         DocumentRequestGeneratedDocument.store(this, documents.iterator().next().getReportFileName() + ".pdf", data);
         return data;
     }

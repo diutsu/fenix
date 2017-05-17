@@ -24,26 +24,32 @@ import org.fenixedu.academic.domain.exceptions.DomainException;
 import org.fenixedu.academic.domain.phd.PhdIndividualProgramDocumentType;
 import org.fenixedu.academic.domain.phd.PhdProgramProcess;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class PhdCandidacyRefereeLetterFile extends PhdCandidacyRefereeLetterFile_Base {
 
     private PhdCandidacyRefereeLetterFile() {
         super();
     }
 
-    PhdCandidacyRefereeLetterFile(final PhdProgramCandidacyProcess candidacyProcess, final String filename, final byte[] content) {
+    PhdCandidacyRefereeLetterFile(final PhdProgramCandidacyProcess candidacyProcess, final String filename, final InputStream content) {
         this();
-        init(candidacyProcess, PhdIndividualProgramDocumentType.RECOMMENDATION_LETTER, null, content, filename, null);
+        try {
+            init(candidacyProcess, PhdIndividualProgramDocumentType.RECOMMENDATION_LETTER, null, content, filename, null);
+        } catch (IOException e) {
+            throw new DomainException("error.reading.file");
+        }
     }
 
-    @Override
     protected void checkParameters(PhdProgramProcess candidacyProcess, PhdIndividualProgramDocumentType documentType,
-            byte[] content, String filename, Person uploader) {
+            InputStream content, String filename, Person uploader) {
 
         String[] args = {};
         if (candidacyProcess == null) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.candidacyProcess.cannot.be.null", args);
         }
-        if (documentType == null || content == null || content.length == 0 || StringUtils.isEmpty(filename)) {
+        if (documentType == null || content == null || StringUtils.isEmpty(filename)) {
             throw new DomainException("error.phd.PhdProgramProcessDocument.documentType.and.file.cannot.be.null");
         }
     }

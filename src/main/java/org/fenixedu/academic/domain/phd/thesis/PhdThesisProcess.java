@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.phd.thesis;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -411,7 +412,11 @@ public class PhdThesisProcess extends PhdThesisProcess_Base {
             }
 
             if (each.hasAnyInformation()) {
-                addDocument(each, responsible);
+                try {
+                    addDocument(each, responsible);
+                } catch (IOException e) {
+                    throw new DomainException("error.file.upload");
+                }
             }
         }
     }

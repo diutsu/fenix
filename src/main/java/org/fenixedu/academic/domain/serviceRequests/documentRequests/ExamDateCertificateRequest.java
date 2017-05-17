@@ -18,6 +18,7 @@
  */
 package org.fenixedu.academic.domain.serviceRequests.documentRequests;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.fenixedu.academic.domain.Enrolment;
